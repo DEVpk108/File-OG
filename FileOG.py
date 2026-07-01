@@ -74,31 +74,38 @@ class FileOrganizerApp(QWidget):
 
     def organize_files(self, directory):
         folder_mapping = {
-            '.txt': 'documents', '.pdf': 'documents', '.docx': 'documents', 
-            '.mp3': 'audio', '.wav': 'audio', '.mp4': 'video', '.mkv': 'video',
-            '.jpg': 'images', '.png': 'images', '.svg': 'images'
+            '.txt': 'documents', '.pdf': 'documents', '.docx': 'documents', '.pptx': 'documents',
+            '.lua': 'codes', '.py': 'codes', '.html': 'codes',
+            '.mp3': 'audio', '.wav': 'audio',
+            '.mp4': 'video', '.mkv': 'video', '.mov': 'video',
+            '.jpg': 'images', '.png': 'images', '.svg': 'images', '.jpeg': 'images', '.heic': 'images',
+            '.exe': 'setups', '.apk': 'setups',
+            '.7z': 'archives', '.zip': 'archives', '.iso': 'archives', '.rar': 'archives'
         }
         
         count = 0
-        dest_folders = list(folder_mapping.values())
-        
-        for root, dirs, files in os.walk(directory):
-            if any(part in dest_folders for part in root.split(os.sep)):
-                continue
+        # Get only the files in the top-level directory
+        try:
+            # We filter for files only, ignoring any existing folders
+            items = os.listdir(directory)
+            files = [f for f in items if os.path.isfile(os.path.join(directory, f))]
+        except Exception as e:
+            raise Exception(f"Could not access directory: {e}")
+            
+        for file in files:
+            ext = os.path.splitext(file)[1].lower()
+            if ext in folder_mapping:
+                target_folder = folder_mapping[ext]
+                dest_dir = os.path.join(directory, target_folder)
+                os.makedirs(dest_dir, exist_ok=True)
                 
-            for file in files:
-                ext = os.path.splitext(file)[1].lower()
-                if ext in folder_mapping:
-                    target_folder = folder_mapping[ext]
-                    dest_dir = os.path.join(directory, target_folder)
-                    os.makedirs(dest_dir, exist_ok=True)
-                    
-                    src = os.path.join(root, file)
-                    dst = os.path.join(dest_dir, file)
-                    
-                    if src != dst:
-                        shutil.move(src, dst)
-                        count += 1
+                src = os.path.join(directory, file)
+                dst = os.path.join(dest_dir, file)
+                
+                # Check if file is already in the destination folder
+                if src != dst:
+                    shutil.move(src, dst)
+                    count += 1
         return count
 
 if __name__ == '__main__':
