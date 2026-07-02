@@ -75,7 +75,8 @@ class FileOrganizerApp(QWidget):
     def organize_files(self, directory):
         folder_mapping = {
             '.txt': 'documents', '.pdf': 'documents', '.docx': 'documents', '.pptx': 'documents',
-            '.lua': 'codes', '.py': 'codes', '.html': 'codes',
+            '.xlsx': 'documents', '.csv': 'documents', # Added spreadsheets
+            '.lua': 'codes', '.py': 'codes', '.html': 'codes', '.json': 'codes',
             '.mp3': 'audio', '.wav': 'audio',
             '.mp4': 'video', '.mkv': 'video', '.mov': 'video',
             '.jpg': 'images', '.png': 'images', '.svg': 'images', '.jpeg': 'images', '.heic': 'images',
@@ -84,28 +85,37 @@ class FileOrganizerApp(QWidget):
         }
         
         count = 0
-        # Get only the files in the top-level directory
         try:
-            # We filter for files only, ignoring any existing folders
             items = os.listdir(directory)
             files = [f for f in items if os.path.isfile(os.path.join(directory, f))]
         except Exception as e:
             raise Exception(f"Could not access directory: {e}")
             
         for file in files:
-            ext = os.path.splitext(file)[1].lower()
-            if ext in folder_mapping:
-                target_folder = folder_mapping[ext]
-                dest_dir = os.path.join(directory, target_folder)
-                os.makedirs(dest_dir, exist_ok=True)
+            name, ext = os.path.splitext(file)
+            ext = ext.lower()
+            
+            # Determine target folder; fall back to an 'others' folder instead of ignoring it
+            target_folder = folder_mapping.get(ext, 'others')
+            dest_dir = os.path.join(directory, target_folder)
+            os.makedirs(dest_dir, exist_ok=True)
+            
+            src = os.path.join(directory, file)
+            dst = os.path.join(dest_dir, file)
+            
+            # Resolve collisions (e.g., if 'photo.jpg' exists, make it 'photo (1).jpg')
+            counter = 1
+            base_name = name
+            while os.path.exists(dst):
+                if src == dst: # Skip processing if it's somehow identical paths
+                    break
+                dst = os.path.join(dest_dir, f"{base_name} ({counter}){ext}")
+                counter += 1
+            
+            if src != dst and os.path.exists(src):
+                shutil.move(src, dst)
+                count += 1
                 
-                src = os.path.join(directory, file)
-                dst = os.path.join(dest_dir, file)
-                
-                # Check if file is already in the destination folder
-                if src != dst:
-                    shutil.move(src, dst)
-                    count += 1
         return count
 
 if __name__ == '__main__':
