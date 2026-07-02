@@ -1,7 +1,7 @@
 import sys
 import os
 import shutil
-from PyQt6.QtWidgets import (QApplication, QWidget, QVBoxLayout, QHBoxLayout, 
+from PyQt6.QtWidgets import (QApplication, QWidget, QVBoxLayout, QHBoxLayout,
                              QLineEdit, QPushButton, QLabel, QFileDialog, QMessageBox)
 from PyQt6.QtCore import Qt
 from PyQt6.QtGui import QIcon
