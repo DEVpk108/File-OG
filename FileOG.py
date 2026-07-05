@@ -66,7 +66,7 @@ class FileOrganizerApp(QWidget):
 
     def initUI(self):
         self.setWindowTitle("File Organizer")
-        self.setGeometry(300, 300, 450, 340) # Resized height slightly to fit the new layout
+        self.setGeometry(300, 300, 450, 340) 
 
         # Main Layout
         layout = QVBoxLayout()
@@ -156,7 +156,7 @@ class FileOrganizerApp(QWidget):
             self.btn_run.setEnabled(True)
             self.btn_run.setText("Run Organizer")
 
-    # --- NEW CONTROLLER METOD: Execute Undo Undo Restorations ---
+    # ---CONTROLLER METOD: Execute Undo Undo Restorations ---
     def run_reverter(self):
         """Processes the stored history file map coordinates inversely to restore original locations."""
         if not self.history_log:
@@ -180,7 +180,7 @@ class FileOrganizerApp(QWidget):
         directories_to_check = set()
 
         try:
-            # Step 1: Pop and reverse processing path loops backwards smoothly
+            # Pop and reverse processing path loops backwards smoothly
             for original_path, organized_path in reversed(self.history_log):
                 if os.path.exists(organized_path):
                     # Cache destination path components to scan for empty directories later
@@ -190,7 +190,7 @@ class FileOrganizerApp(QWidget):
                     shutil.move(organized_path, original_path)
                     revert_count += 1
 
-            # Step 2: Clean up organizational tracking folders if left fully empty
+            # Clean up organizational tracking folders if left fully empty
             for folder in directories_to_check:
                 try:
                     if os.path.exists(folder) and not os.listdir(folder):
