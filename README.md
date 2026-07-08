@@ -5,7 +5,7 @@ File-OG is an enterprise-grade, high-performance local automation tool designed 
 
 ---
 
-## 🚀 Key Features in Version 2.1.0
+##  Key Features in Version 2.1.0
 
 * **Bidirectional Restoration Engine (Revert Changes):** Introduced a state-aware memory map tracking engine. If a user runs a sweep inside an incorrect folder, clicking "Revert Changes" cleanly reverses the file streams chronological-backwards, restores all elements to their precise root paths, and seamlessly prunes empty orphan categories.
 * **Cloud Acceleration Engine:** A native workflow button **"Add Google Drive"** mapped directly into the UI dashboard. It securely streams verified distribution packages from cloud servers to provision and mount a virtual workspace.
